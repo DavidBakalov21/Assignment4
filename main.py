@@ -74,3 +74,35 @@ def forth():
 # Print the results
     print(top_actors)
 forth()
+def fives():
+    titles = pd.read_csv("titles.csv")
+    credits = pd.read_csv("credits.csv")
+
+    # Обєднання данних по "id"
+    data = pd.merge(titles, credits, on='id')
+
+    # Фільтрація фрейму даних, щоб обрати лише 1000 найкращих фільмів за рейтингом IMDb
+    data = data.sort_values("imdb_score", ascending=False).head(1000)
+
+    # Створення новогу датафрейму з окремими рядками для кожного жанру
+    mv_ls = []
+    mv_genres = data.genres
+    for tst in mv_genres:
+        tokens = tst
+        c_tokens = [''.join(e for e in string if e.isalnum()) for string in tokens]
+        c_tokens = [x for x in c_tokens if x]
+        for splt in c_tokens:
+            mv_ls.append(splt.lower())
+    movies_genres = pd.DataFrame(mv_ls, columns=["genres"])
+    movies_genres = movies_genres.groupby(['genres'])['genres'].count().reset_index(name='total_movies')
+    movies_genres = movies_genres.sort_values('total_movies', ascending=False)
+    print(movies_genres)
+    plt.figure(figsize=(11, 8))
+
+    plt.title("TOP movies genre")
+
+    sns.barplot(x=movies_genres["total_movies"], y=movies_genres["genres"], data=movies_genres, ci=None, palette=sns.color_palette("Set2"))
+
+    plt.ylabel("Genres")
+    plt.xlabel("Total Movies")
+    plt.show()
