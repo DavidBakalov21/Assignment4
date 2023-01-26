@@ -54,3 +54,23 @@ def third():
 
     plt.plot(XData, YData)
     plt.show()
+
+
+def forth():
+    titles_df = pd.read_csv("titles.csv")
+    credits_df = pd.read_csv("credits.csv")
+    titles_df= titles_df.sort_values("imdb_score", ascending=False).head(1000)
+# Merge the data on the "id" column
+    data = pd.merge(titles_df, credits_df, on='id')
+
+# Filter the dataframe to only include the top 1000 movies by IMDb rating
+
+
+# Group the data by the "name" column (for actors) and count the number of movies each actor is in
+    actor_count = data.groupby("name")["id"].size().reset_index(name='counts')
+# Get the top 10 actors by the number of movies they are in
+    top_actors = actor_count.nlargest(10, 'counts')
+
+# Print the results
+    print(top_actors)
+forth()
