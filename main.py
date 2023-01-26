@@ -32,3 +32,25 @@ def second():
     print(readyData)
     plt.pie(readyData, labels=LabelData)
     plt.show()
+
+def third():
+    DateData=file[file["release_year"]>=2000].dropna()
+    DateDataRate=DateData[DateData["imdb_score"]>=8.0].dropna()
+
+    #DateDataRateSorted=DateDataRate.sort_values("release_year")
+    g =DateDataRate.groupby('release_year')["imdb_score"].count()
+    gd =DateData.groupby('release_year')["type"].count()
+    gg=g.reset_index()
+    ggg=gd.reset_index()
+    gg1=gg.sort_values("release_year")
+    ggg1=ggg.sort_values("release_year")
+    print(gg1)
+
+    merged_df=pd.merge(gg1, ggg1, how="outer", on="release_year").sort_values("release_year")
+    merged_df=merged_df.fillna(0)
+    YData=merged_df["imdb_score"]/merged_df["type"]
+    #gg1["release_year"]
+    XData=merged_df["release_year"]
+
+    plt.plot(XData, YData)
+    plt.show()
