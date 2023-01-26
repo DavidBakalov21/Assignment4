@@ -24,3 +24,11 @@ def first():
     plt.xlabel("Score")
     plt.ylabel("titles")
     plt.show()
+def second():
+    AgeData=file[file["type"]=="SHOW"].dropna()
+    readyData=AgeData.pivot_table(columns=['age_certification'], aggfunc='size')
+    readyDataFrame=readyData.reset_index()
+    LabelData=readyDataFrame["age_certification"]
+    print(readyData)
+    plt.pie(readyData, labels=LabelData)
+    plt.show()
